@@ -1,4 +1,4 @@
-package com.cse5236.lewissandoval.cse5236;
+package com.example.art.the_restaurant_guru;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
