@@ -2,6 +2,9 @@ package com.example.art.the_restaurant_guru;
 
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -12,17 +15,64 @@ public class MapsActivity extends FragmentActivity {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
 
+    public void onPause_btn(View v){
+        Button button = (Button) v;
+        ((Button) v).setText("clicked onPause()!");
+        onPause();
+    }
+    public void onStart_btn(View v){
+        Button button = (Button) v;
+        ((Button) v).setText("clicked onStart()!");
+        onStart();
+    }
+    public void onResume_btn(View v){
+        Button button = (Button) v;
+        ((Button) v).setText("clicked onResume()!");
+        onResume();
+    }
+    public void onStop_btn(View v){
+        Button button = (Button) v;
+        ((Button) v).setText("clicked onStop()!");
+        onStop();
+    }
+    public void onDestroy_btn(View v){
+        Button button = (Button) v;
+        ((Button) v).setText("clicked onDestroy()!");
+        onDestroy();
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         setUpMapIfNeeded();
+        Log.d("MyAndroid", "onCreate");
+    }
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d("MyAndroid", "onStart");
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d("MyAndroid","onPause");
+    }
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d("MyAndroid","onStop");
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d("MyAndroid","onDestroy");
+    }
     @Override
     protected void onResume() {
         super.onResume();
         setUpMapIfNeeded();
+        Log.d("MyAndroid","onResume");
     }
 
     /**
