@@ -1,4 +1,8 @@
 <resources>
-    <string name="app_name">the_restaurant_guru</string>
+    <string name="app_name">Restaurant Guru</string>
+    <string name="splash_one">THE</string>
+    <string name="splash_two">RESTAURANT</string>
+    <string name="splash_three">GURU</string>
     <string name="title_activity_maps">Map</string>
+    <string name="title_activity_splash_screen">SplashScreen</string>
 </resources>
