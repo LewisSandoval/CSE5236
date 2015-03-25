@@ -2,63 +2,21 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:orientation="vertical"
-    android:weightSum="1">
+    android:weightSum="1"
+    android:orientation="vertical">
 
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="onStart_btn"
-        android:id="@+id/button"
-        android:onClick="onStart_btn" />
 
     <Button
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="onPause_btn"
-        android:id="@+id/button2"
-        android:layout_gravity="center_vertical"
-        android:onClick="onPause_btn" />
+        android:text="Show Home Screen"
+        android:id="@+id/map_button"
+        android:onClick="map_button" />
 
-    <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="onResume_btn"
-        android:id="@+id/button4"
-        android:onClick="onResume_btn" />
-
-    <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="onStop_btn"
-        android:id="@+id/button3"
-        android:onClick="onStop_btn" />
-
-    <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="onDestroy_btn"
-        android:id="@+id/button5"
-        android:onClick="onDestroy_btn" />
-
-    <Spinner
-        android:layout_width="47dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/spinner"
-        android:layout_weight="0.55" />
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent">
-
-        <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="386dp"
     android:layout_height="432dp" android:id="@+id/map" tools:context=".MapsActivity"
     android:name="com.google.android.gms.maps.SupportMapFragment" />
-    </LinearLayout>
+
 </LinearLayout>
