@@ -8,7 +8,7 @@
         android:id="@+id/first_spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:prompt="@string/first_prompt" />
+        android:prompt="@string/category_prompt" />
 
     <Spinner
         android:id="@+id/second_spinner"

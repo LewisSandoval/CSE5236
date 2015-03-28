@@ -5,4 +5,7 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <color name="primary_color">#666666</color>
+    <color name="secondary_color">#bb0000</color>
+
 </resources>

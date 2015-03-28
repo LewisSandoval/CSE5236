@@ -14,53 +14,38 @@ import java.util.List;
 
 public class HomeScreen extends Activity {
     private Spinner first_spinner;
+    private Spinner second_spinner;
+    private Spinner third_spinner;
     private Button submit_btn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen);
+
         first_spinner = (Spinner) findViewById(R.id.first_spinner);
-        List<String> list = new ArrayList<String>();
-        list.add("Android");
-        list.add("Java");
-        list.add("Spinner Data");
-        list.add("Spinner Adapter");
-        list.add("Spinner Example");
-        for(int i=0;i<10;i++)
-        {
-            list.add(i+"");
-        }
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>
-                (this, android.R.layout.simple_spinner_item,list);
+        ArrayAdapter<CharSequence> catAdapter = ArrayAdapter.createFromResource(this, R.array.category_array, android.R.layout.simple_spinner_item);
+        catAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        first_spinner.setAdapter(catAdapter);
 
-        dataAdapter.setDropDownViewResource
-                (android.R.layout.simple_spinner_dropdown_item);
+        second_spinner = (Spinner) findViewById(R.id.second_spinner);
+        ArrayAdapter<CharSequence> priceAdapter = ArrayAdapter.createFromResource(this, R.array.price_array, android.R.layout.simple_spinner_item);
+        priceAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        second_spinner.setAdapter(priceAdapter);
 
-        first_spinner.setAdapter(dataAdapter);
-
-        // Spinner item selection Listener
-        addListenerOnSpinnerItemSelection();
+        third_spinner = (Spinner) findViewById(R.id.third_spinner);
+        ArrayAdapter<CharSequence> rangeAdapter = ArrayAdapter.createFromResource(this, R.array.range_array, android.R.layout.simple_spinner_item);
+        rangeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        third_spinner.setAdapter(rangeAdapter);
 
         // Button click Listener
         addListenerOnButton();
 
     }
 
-    // Add spinner data
-
-    public void addListenerOnSpinnerItemSelection(){
-
-        first_spinner.setOnItemSelectedListener(new CustomOnItemSelectedListener());
-
-    }
-
     //get the selected dropdown list value
 
     public void addListenerOnButton() {
-
-        first_spinner = (Spinner) findViewById(R.id.first_spinner);
-
         submit_btn = (Button) findViewById(R.id.submit_btn);
 
         submit_btn.setOnClickListener(new OnClickListener() {
@@ -68,10 +53,70 @@ public class HomeScreen extends Activity {
             @Override
             public void onClick(View v) {
 
+                Intent intent = new Intent(HomeScreen.this, MapsActivity.class);
+                intent.putExtra("category", String.valueOf(first_spinner.getSelectedItem()));
+
+                int price = -1;
+                String priceString = String.valueOf(second_spinner.getSelectedItem());
+                switch (priceString){
+                    case "$":
+                        price = 0;
+                        break;
+                    case "$$":
+                        price = 1;
+                        break;
+                    case "$$$":
+                        price = 2;
+                        break;
+                    case "$$$$":
+                        price = 3;
+                        break;
+                    case "$$$$$":
+                        price = 4;
+                        break;
+                    case "Any":
+                        price = -1;
+                        break;
+                    default:
+                        Toast.makeText(HomeScreen.this,
+                                "Price Error : " +
+                                        "\n" + String.valueOf(second_spinner.getSelectedItem()) ,
+                                Toast.LENGTH_LONG).show();
+                }
+                intent.putExtra("price", price);
+
+                int range = 50000;
+                String rangeString = String.valueOf(third_spinner.getSelectedItem());
+                switch (rangeString){
+                    case "1 Mile":
+                        range = 1609;
+                        break;
+                    case "3 Miles":
+                        range = 1609 * 3;
+                        break;
+                    case "5 Miles":
+                        range = 1609 * 5;
+                        break;
+                    case "10 Miles":
+                        range = 1609 * 10;
+                        break;
+                    case "Any":
+                        range = 50000;
+                        break;
+                    default:
+                        Toast.makeText(HomeScreen.this,
+                                "Range Error : " +
+                                        "\n" + String.valueOf(third_spinner.getSelectedItem()) ,
+                                Toast.LENGTH_LONG).show();
+                }
+                intent.putExtra("range", range);
+
                 Toast.makeText(HomeScreen.this,
                         "On Button Click : " +
-                                "\n" + String.valueOf(first_spinner.getSelectedItem()) ,
+                                "\n" + String.valueOf(first_spinner.getSelectedItem()) + "\n" + price + "\n" + range,
                         Toast.LENGTH_LONG).show();
+
+                startActivity(intent);
             }
 
         });

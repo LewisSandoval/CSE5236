@@ -3,7 +3,7 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_vertical"
-    android:background="#4d4d4d">
+    android:background="@color/primary_color">
 
     <TextView
         android:layout_width="wrap_content"
@@ -13,7 +13,7 @@
         android:layout_gravity="center_horizontal"
         android:textStyle="bold"
         android:textSize="36sp"
-        android:textColor="#4283de" />
+        android:textColor= "@color/secondary_color" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -23,7 +23,7 @@
         android:layout_gravity="center_horizontal"
         android:textStyle="bold"
         android:textSize="36sp"
-        android:textColor="#4283de" />
+        android:textColor="@color/secondary_color" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -33,12 +33,14 @@
         android:layout_gravity="center_horizontal"
         android:textStyle="bold"
         android:textSize="36sp"
-        android:textColor="#4283de" />
+        android:textColor="@color/secondary_color" />
 
     <RatingBar
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/ratingBar"
         android:layout_gravity="center_horizontal"
-        android:rating="5" />
+        android:rating="0"
+        android:numStars="5"
+        android:nestedScrollingEnabled="false" />
 </LinearLayout>
