@@ -1,23 +1,24 @@
 package com.example.art.the_restaurant_guru;
 
 import android.content.Intent;
-import android.support.v4.app.FragmentActivity;
+import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
-import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-
 public class MapsActivity extends FragmentActivity {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
-
+    int PLACE_PICKER_REQUEST = 1;
 
 
     public void map_button(View v){
@@ -27,13 +28,38 @@ public class MapsActivity extends FragmentActivity {
         startActivity(i);
     }
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_maps);
         setUpMapIfNeeded();
+   /*     This code uses PlacePicker, but I got it to work by just passing params to gmaps line 116
 
+          PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+          Context context = getApplicationContext();
+          try {
+            startActivityForResult(builder.build(context),PLACE_PICKER_REQUEST);
 
+        } catch (GooglePlayServicesRepairableException e) {
+            e.printStackTrace();
+        } catch (GooglePlayServicesNotAvailableException e) {
+            e.printStackTrace();
+        }*/
+
+    }
+
+    // This is where startActivityForResult on line 43 ,returns
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == PLACE_PICKER_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                Place place = PlacePicker.getPlace(data, this);
+
+                String toastMsg = String.format("Place: %s,type: %s", place.getName(),place.getPhoneNumber());
+                Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
+            }
+        }
     }
     @Override
      protected void onStart() {
@@ -85,5 +111,11 @@ public class MapsActivity extends FragmentActivity {
      */
     private void setUpMap() {
         mMap.addMarker(new MarkerOptions().position(new LatLng(40.0017311,-83.0196284)).title("Marker"));
+        mMap.setMyLocationEnabled(true);
+        // just need to update this string to change the search results.
+        Uri gmmIntentUri = Uri.parse("geo:40.0017311,-83.0196284?q=restaurants");
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+        mapIntent.setPackage("com.google.android.apps.maps");
+        startActivity(mapIntent);
     }
 }

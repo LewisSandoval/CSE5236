@@ -8,7 +8,7 @@ import android.content.Intent;
 
 public class SplashScreen extends Activity {
 
-    private final int SPLASH_DELAY = 1000;
+    private final int SPLASH_DELAY = 2000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
