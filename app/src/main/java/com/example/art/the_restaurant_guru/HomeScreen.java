@@ -3,14 +3,12 @@ package com.example.art.the_restaurant_guru;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
-import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.Toast;
-import java.util.ArrayList;
-import java.util.List;
 
 public class HomeScreen extends Activity {
     private Spinner first_spinner;
@@ -53,7 +51,7 @@ public class HomeScreen extends Activity {
             @Override
             public void onClick(View v) {
 
-                Intent intent = new Intent(HomeScreen.this, MapsActivity.class);
+                Intent intent = new Intent(HomeScreen.this, MainActivity.class);
                 intent.putExtra("category", String.valueOf(first_spinner.getSelectedItem()));
 
                 int price = -1;
@@ -123,12 +121,5 @@ public class HomeScreen extends Activity {
 
     }
 
-    public void show_map_btn(View view)
-    {
-        Button button = (Button) view;
-        ((Button) view).setText("getting map....");
-        Intent i = new Intent(getApplicationContext(),MapsActivity.class);
-        startActivity(i);
-    }
 
 }

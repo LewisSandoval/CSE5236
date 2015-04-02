@@ -52,16 +52,6 @@
 
         android:background="@color/secondary_color" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:text="Show Map"
-        android:id="@+id/get_map_btn"
-        android:onClick="show_map_btn"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/submit_btn"
-        android:layout_margin="10dp"
-        android:background="@color/secondary_color" />
 
     <TextView
         android:layout_width="wrap_content"

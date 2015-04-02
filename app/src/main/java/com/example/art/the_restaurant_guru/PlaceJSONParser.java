@@ -58,7 +58,9 @@ public class PlaceJSONParser {
         String vicinity="-NA-";
         String latitude="";
         String longitude="";
-
+        int price=0;
+        String type = "";
+        String jsonObject=jPlace.toString();
 
         try {
             // Extracting Place name, if available
@@ -70,6 +72,14 @@ public class PlaceJSONParser {
             if(!jPlace.isNull("vicinity")){
                 vicinity = jPlace.getString("vicinity");
             }
+            // Extracting Place Price, if available
+            if(!jPlace.isNull("price_level")){
+                price = jPlace.getInt("price_level");
+            }
+
+
+            JSONArray the_types = jPlace.getJSONArray("types");
+            type = the_types.toString();
 
             latitude = jPlace.getJSONObject("geometry").getJSONObject("location").getString("lat");
             longitude = jPlace.getJSONObject("geometry").getJSONObject("location").getString("lng");
@@ -79,7 +89,9 @@ public class PlaceJSONParser {
             place.put("vicinity", vicinity);
             place.put("lat", latitude);
             place.put("lng", longitude);
-
+            place.put("price",price+"");
+            place.put("type",type);
+            place.put("temp",jsonObject);
 
         } catch (JSONException e) {
             e.printStackTrace();

@@ -3,7 +3,9 @@ package com.example.art.the_restaurant_guru;
 /**
  * Created by art on 4/1/2015.
  */
+
 import android.app.Dialog;
+import android.content.Intent;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -14,10 +16,7 @@ import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.Spinner;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -42,14 +41,21 @@ import java.util.List;
 public class MainActivity extends FragmentActivity implements LocationListener{
 
     GoogleMap mGoogleMap;
-    Spinner mSprPlaceType;
 
-    String[] mPlaceType=null;
-    String[] mPlaceTypeName=null;
+    double mLatitude=40.0017311;
+    double mLongitude=-83.0196284;
+    String key ="AIzaSyAg3ptiV1rlkHrijfSa0WVMOt2UJUnF7Ng"; // This is the browser key
+    private String category;
+    private int price;
+    private int range;
 
-    double mLatitude=0;
-    double mLongitude=0;
-    String key ="AIzaSyAg3ptiV1rlkHrijfSa0WVMOt2UJUnF7Ng";
+    public void back_to_home_btn(View view)
+    {
+        Button button = (Button) view;
+        ((Button) view).setText("getting home screen....");
+        Intent i = new Intent(getApplicationContext(),HomeScreen.class);
+        startActivity(i);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,27 +64,13 @@ public class MainActivity extends FragmentActivity implements LocationListener{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Array of place types
-        mPlaceType = getResources().getStringArray(R.array.place_type);
+        Bundle extras = getIntent().getExtras();
+        if(extras != null){
+            category = extras.getString("category");
+            price = extras.getInt("price");
+            range = extras.getInt("range");
 
-        // Array of place type names
-        mPlaceTypeName = getResources().getStringArray(R.array.place_type_name);
-
-        // Creating an array adapter with an array of Place types
-        // to populate the spinner
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, mPlaceTypeName);
-
-        // Getting reference to the Spinner
-        mSprPlaceType = (Spinner) findViewById(R.id.spr_place_type);
-
-        // Setting adapter on Spinner to set place types
-        mSprPlaceType.setAdapter(adapter);
-
-        Button btnFind;
-
-        // Getting reference to Find Button
-        btnFind = ( Button ) findViewById(R.id.btn_find);
-
+        }
 
         // Getting Google Play availability status
         int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getBaseContext());
@@ -121,21 +113,11 @@ public class MainActivity extends FragmentActivity implements LocationListener{
 
             locationManager.requestLocationUpdates(provider, 20000, 0, this);
 
-            // Setting click event lister for the find button
-            btnFind.setOnClickListener(new OnClickListener() {
-
-                @Override
-                public void onClick(View v) {
-
-
-                    int selectedPosition = mSprPlaceType.getSelectedItemPosition();
-                    String type = mPlaceType[selectedPosition];
-
-
                     StringBuilder sb = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
                     sb.append("location="+mLatitude+","+mLongitude);
-                    sb.append("&radius=5000");
-                    sb.append("&types="+type);
+                    sb.append("&radius="+range);
+                    sb.append("&types=restaurant");
+                    sb.append("&price="+price);
                     sb.append("&sensor=true");
                     sb.append("&key="+key);
 
@@ -148,11 +130,9 @@ public class MainActivity extends FragmentActivity implements LocationListener{
 
 
                 }
-            });
-
-        }
 
     }
+
 
     /** A method to download json data from url */
     private String downloadUrl(String strUrl) throws IOException{
@@ -263,6 +243,7 @@ public class MainActivity extends FragmentActivity implements LocationListener{
                 // Getting a place from the places list
                 HashMap<String, String> hmPlace = list.get(i);
 
+
                 // Getting latitude of the place
                 double lat = Double.parseDouble(hmPlace.get("lat"));
 
@@ -275,6 +256,13 @@ public class MainActivity extends FragmentActivity implements LocationListener{
                 // Getting vicinity
                 String vicinity = hmPlace.get("vicinity");
 
+                // Getting the type
+                String type = hmPlace.get("type");
+
+                // Getting the price_level
+                String price = hmPlace.get("price");
+                int price_level = Integer.parseInt(price);
+                int user_price = Integer.parseInt(price);
                 LatLng latLng = new LatLng(lat, lng);
 
                 // Setting the position for the marker
@@ -282,11 +270,15 @@ public class MainActivity extends FragmentActivity implements LocationListener{
 
                 // Setting the title for the marker.
                 //This will be displayed on taping the marker
-                markerOptions.title(name + " : " + vicinity);
+                markerOptions.title(name + " : " + vicinity+price);
 
-                // Placing a marker on the touched position
-                mGoogleMap.addMarker(markerOptions);
-
+                if(price_level <= user_price) {
+                    // Placing a marker on the touched position
+                    mGoogleMap.addMarker(markerOptions);
+                }
+                // dump the JSONObject to logcat
+                String a = hmPlace.get("temp");
+                Log.d("the jsonObject!!!!!!",a);
             }
 
         }
