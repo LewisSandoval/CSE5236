@@ -36,6 +36,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 
 public class MainActivity extends FragmentActivity implements LocationListener{
@@ -49,12 +50,25 @@ public class MainActivity extends FragmentActivity implements LocationListener{
     private int price;
     private int range;
 
+    private String[] placeArray;
+
     public void back_to_home_btn(View view)
     {
         Button button = (Button) view;
         ((Button) view).setText("getting home screen....");
         Intent i = new Intent(getApplicationContext(),HomeScreen.class);
         startActivity(i);
+    }
+
+    public void randomPlace(View view)
+    {
+        Random random = new Random();
+
+        if(placeArray.length > 0) {
+            ((Button) view).setText(placeArray[(random.nextInt(placeArray.length))]);
+        } else {
+            ((Button) view).setText("No places found :(");
+        }
     }
 
     @Override
@@ -69,8 +83,9 @@ public class MainActivity extends FragmentActivity implements LocationListener{
             category = extras.getString("category");
             price = extras.getInt("price");
             range = extras.getInt("range");
-
         }
+
+        placeArray = new String[20];
 
         // Getting Google Play availability status
         int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getBaseContext());
@@ -93,8 +108,6 @@ public class MainActivity extends FragmentActivity implements LocationListener{
             // Enabling MyLocation in Google Map
             mGoogleMap.setMyLocationEnabled(true);
 
-
-
             // Getting LocationManager object from System Service LOCATION_SERVICE
             LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
@@ -116,9 +129,10 @@ public class MainActivity extends FragmentActivity implements LocationListener{
                     StringBuilder sb = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
                     sb.append("location="+mLatitude+","+mLongitude);
                     sb.append("&radius="+range);
-                    sb.append("&types=restaurant");
-                    sb.append("&price="+price);
+                    sb.append("&types=restaurant|food|bakery|cafe");
+                    if(price >= 0){ sb.append("&minprice="+price); sb.append("&maxprice=" + price);}
                     sb.append("&sensor=true");
+                    if(category.compareTo("Any") != 0){ sb.append("&keyword=" + category);}
                     sb.append("&key="+key);
 
 
@@ -127,8 +141,6 @@ public class MainActivity extends FragmentActivity implements LocationListener{
 
                     // Invokes the "doInBackground()" method of the class PlaceTask
                     placesTask.execute(sb.toString());
-
-
                 }
 
     }
@@ -279,6 +291,8 @@ public class MainActivity extends FragmentActivity implements LocationListener{
                 // dump the JSONObject to logcat
                 String a = hmPlace.get("temp");
                 Log.d("the jsonObject!!!!!!",a);
+
+                placeArray[i] = name;
             }
 
         }

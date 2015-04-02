@@ -13,6 +13,15 @@
         android:text="Return to Home screen"
         android:onClick="back_to_home_btn" />
 
+    <Button
+        android:id="@+id/btn_random"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/btn_find"
+        android:text="Randomize"
+        android:onClick="randomPlace" />
+
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/map"
         android:layout_width="wrap_content"
