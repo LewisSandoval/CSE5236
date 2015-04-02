@@ -21,7 +21,8 @@ public class SplashScreen extends Activity {
             @Override
             public void run() {
                 /* Create an Intent that will start the Next. */
-                Intent mainIntent = new Intent(SplashScreen.this,HomeScreen.class);
+            //    Intent mainIntent = new Intent(SplashScreen.this,HomeScreen.class);
+                Intent mainIntent = new Intent(SplashScreen.this,MainActivity.class);
                 SplashScreen.this.startActivity(mainIntent);
                 SplashScreen.this.finish();
             }

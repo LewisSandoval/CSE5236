@@ -24,7 +24,13 @@
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyCGObwCm8YsA2sM6wzxTRcpA3nI8Vc6v_w"  />
-
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/title_activity_maps" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps" >
