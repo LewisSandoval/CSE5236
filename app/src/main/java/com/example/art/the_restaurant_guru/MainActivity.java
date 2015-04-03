@@ -290,26 +290,25 @@ public class MainActivity extends FragmentActivity implements LocationListener{
                     // Placing a marker on the touched position
                     Marker marker = mGoogleMap.addMarker(markerOptions);
                 }
-                /*    mGoogleMap.setOnMarkerClickListener(
+                 /*   mGoogleMap.setOnMarkerClickListener(
                             new GoogleMap.OnMarkerClickListener() {
                                 @Override
                                 public boolean onMarkerClick(Marker marker) {
-                                //   try {
-                                //        saveData(marker);
-                                //    } catch (IOException e) {
-                                //        e.printStackTrace();
-                                //    }
 
+                                    String id = marker.getId();
+                                    String info = marker.getTitle();
+                                    LatLng location = marker.getPosition();
+                                    String hil = marker.getSnippet();
                                     Intent i = new Intent(getApplicationContext(),ShowRestaurant.class);
                                     i.putExtra("id", String.valueOf(marker.getId()));
-                                    i.putExtra("info", String.valueOf(marker.getTitle()));
-                                    i.putExtra("location", String.valueOf(marker.getPosition()));
+                                    i.putExtra("id", String.valueOf(marker.getTitle()));
+                                    i.putExtra("id", String.valueOf(marker.getPosition()));
                                     startActivity(i);
                                     return false;
                                 }
                             }
                     );
-                }  */
+                }*/
                 // dump the JSONObject to logcat
                 String a = hmPlace.get("temp");
                 Log.d("the jsonObject!!!!!!",a);
