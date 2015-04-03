@@ -46,6 +46,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+import java.util.Vector;
 
 public class MainActivity extends FragmentActivity implements LocationListener{
 
@@ -58,7 +59,7 @@ public class MainActivity extends FragmentActivity implements LocationListener{
     private String category;
     private int price;
     private int range;
-    private String [] placeArray;
+    private List<String> placeList;
 
     /* Accelerometer stuff */
     private SensorManager mSensorManager;
@@ -83,8 +84,7 @@ public class MainActivity extends FragmentActivity implements LocationListener{
             }
         }
 
-        public void onAccuracyChanged(Sensor sensor, int accuracy) {
-        }
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {}
     };
 
     public void back_to_home_btn(View view)
@@ -97,8 +97,8 @@ public class MainActivity extends FragmentActivity implements LocationListener{
     public void randomPlace(View view)
     {
         Random random = new Random();
-        if(placeArray.length > 0) {
-            ((Button) view).setText(placeArray[(random.nextInt(placeArray.length))]);
+        if(placeList.size() > 0) {
+            ((Button) view).setText(placeList.get((random.nextInt(placeList.size()))));
         } else {
             ((Button) view).setText("No places found :(");
         }
@@ -124,7 +124,7 @@ public class MainActivity extends FragmentActivity implements LocationListener{
         // Getting Google Play availability status
         int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getBaseContext());
 
-        placeArray = new String[20];
+        placeList = new Vector<String>();
 
         if(status!=ConnectionResult.SUCCESS){ // Google Play Services are not available
 
@@ -362,7 +362,7 @@ public class MainActivity extends FragmentActivity implements LocationListener{
                 String a = hmPlace.get("temp");
                 Log.d("the jsonObject!!!!!!",a);
 
-                placeArray[i] = name;
+                placeList.add(name);
             }
 
         }
