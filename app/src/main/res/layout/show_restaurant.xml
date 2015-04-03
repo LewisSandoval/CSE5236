@@ -32,6 +32,29 @@
         android:text="Save Rating"
         android:id="@+id/save_btn"
         android:layout_gravity="center_horizontal"
-        android:layout_weight="0.03" />
+        android:layout_weight="0.03"
+        android:onClick="save_btn" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="New Text"
+        android:id="@+id/showSaveData"
+        android:layout_weight="0.34" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Show Saved Data"
+        android:id="@+id/show_save_data_btn"
+        android:layout_weight="0.05"
+        android:onClick="showSavedData" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Delete Saved Data"
+        android:id="@+id/delete_btn"
+        android:onClick="deleteFile" />
 
 </LinearLayout>

@@ -32,21 +32,6 @@ public class MapsActivity extends FragmentActivity {
     public void map_button(View v) throws IOException {
         Button button = (Button) v;
         ((Button) v).setText("getting home screen...");
-        //  Intent i = new Intent(getApplicationContext(), HomeScreen.class);
-        //   startActivity(i);
-    /*      PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
-          Context context = getApplicationContext();
-        try {
-           startActivityForResult(builder.build(context), PLACE_PICKER_REQUEST);
-
-
-        } catch (GooglePlayServicesRepairableException e) {
-            e.printStackTrace();
-        } catch (GooglePlayServicesNotAvailableException e) {
-            e.printStackTrace();
-        }
-*/
-
     }
 
 

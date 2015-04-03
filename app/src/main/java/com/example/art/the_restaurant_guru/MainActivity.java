@@ -35,9 +35,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -59,16 +56,18 @@ public class MainActivity extends FragmentActivity implements LocationListener{
     private String category;
     private int price;
     private int range;
-    private List<String> placeList;
+    private List<String> placeArray;
+    private List<String> addressArray;
+    private List<LatLng> locationArray;
+    private List<String> idArray;
+    private int pointer;
 
     /* Accelerometer stuff */
     private SensorManager mSensorManager;
     private float mAccel; // acceleration apart from gravity
     private float mAccelCurrent; // current acceleration including gravity
     private float mAccelLast; // last acceleration including gravity
-
     private final SensorEventListener mSensorListener = new SensorEventListener() {
-
         public void onSensorChanged(SensorEvent se) {
             float x = se.values[0];
             float y = se.values[1];
@@ -77,13 +76,11 @@ public class MainActivity extends FragmentActivity implements LocationListener{
             mAccelCurrent = (float) Math.sqrt((double) (x*x + y*y + z*z));
             float delta = mAccelCurrent - mAccelLast;
             mAccel = mAccel * 0.9f + delta; // perform low-cut filter
-
             if (mAccel > 12) {
                 View btn =	(Button)findViewById(R.id.btn_random);
                 randomPlace(btn);
             }
         }
-
         public void onAccuracyChanged(Sensor sensor, int accuracy) {}
     };
 
@@ -96,13 +93,41 @@ public class MainActivity extends FragmentActivity implements LocationListener{
     }
     public void randomPlace(View view)
     {
+
         Random random = new Random();
-        if(placeList.size() > 0) {
-            ((Button) view).setText(placeList.get((random.nextInt(placeList.size()))));
+        pointer = (random.nextInt(placeArray.size()));
+        if(placeArray.size() > 0) {
+
+            ((Button) view).setText(placeArray.get(pointer));
         } else {
             ((Button) view).setText("No places found :(");
         }
     }
+    public void moreInfo(View view){
+        Button button = (Button) view;
+        ((Button) view).setText("getting more info....");
+        String id = idArray.get(pointer);
+        String name = placeArray.get(pointer);
+        String address = addressArray.get(pointer);
+        LatLng location = locationArray.get(pointer);
+        Intent i = new Intent(getApplicationContext(),ShowRestaurant.class);
+        i.putExtra("id", String.valueOf(id));
+        i.putExtra("name", String.valueOf(name));
+        i.putExtra("address", String.valueOf(address));
+        i.putExtra("location", String.valueOf(location));
+        startActivity(i);
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mSensorManager.registerListener(mSensorListener, mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL);
+    }
+    @Override
+    protected void onPause() {
+        mSensorManager.unregisterListener(mSensorListener);
+        super.onPause();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -124,7 +149,10 @@ public class MainActivity extends FragmentActivity implements LocationListener{
         // Getting Google Play availability status
         int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getBaseContext());
 
-        placeList = new Vector<String>();
+        placeArray = new Vector<String>();
+        addressArray = new Vector<String>();
+        locationArray = new Vector<LatLng>();
+        idArray = new Vector<String>();
 
         if(status!=ConnectionResult.SUCCESS){ // Google Play Services are not available
 
@@ -178,22 +206,8 @@ public class MainActivity extends FragmentActivity implements LocationListener{
 
                     // Invokes the "doInBackground()" method of the class PlaceTask
                     placesTask.execute(sb.toString());
-
-
                 }
 
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mSensorManager.registerListener(mSensorListener, mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL);
-    }
-
-    @Override
-    protected void onPause() {
-        mSensorManager.unregisterListener(mSensorListener);
-        super.onPause();
     }
 
 
@@ -231,8 +245,10 @@ public class MainActivity extends FragmentActivity implements LocationListener{
         }catch(Exception e){
             Log.d("Error  downloading url", e.toString());
         }finally{
-            iStream.close();
-            urlConnection.disconnect();
+            if(iStream != null){
+                iStream.close();
+                urlConnection.disconnect();
+            }
         }
 
         return data;
@@ -298,7 +314,7 @@ public class MainActivity extends FragmentActivity implements LocationListener{
             // Clears all the existing markers
             mGoogleMap.clear();
 
-            for(int i=0;i<list.size();i++){
+            for(int i=0;i<list.size();i++) {
 
                 // Creating a marker
                 MarkerOptions markerOptions = new MarkerOptions();
@@ -306,6 +322,8 @@ public class MainActivity extends FragmentActivity implements LocationListener{
                 // Getting a place from the places list
                 HashMap<String, String> hmPlace = list.get(i);
 
+                // Getting id of the place
+               // String id = hmPlace.get("id");
 
                 // Getting latitude of the place
                 double lat = Double.parseDouble(hmPlace.get("lat"));
@@ -335,38 +353,23 @@ public class MainActivity extends FragmentActivity implements LocationListener{
                 //This will be displayed on taping the marker
                 markerOptions.title(name + " : " + vicinity);
 
-                if(price_level <= user_price) {
+                if (price_level <= user_price) {
                     // Placing a marker on the touched position
                     Marker marker = mGoogleMap.addMarker(markerOptions);
+                    String id = marker.getId();
+                    placeArray.add(name);
+                    addressArray.add(vicinity);
+                    locationArray.add(latLng);
+                    idArray.add(id);
                 }
-                 /*   mGoogleMap.setOnMarkerClickListener(
-                            new GoogleMap.OnMarkerClickListener() {
-                                @Override
-                                public boolean onMarkerClick(Marker marker) {
 
-                                    String id = marker.getId();
-                                    String info = marker.getTitle();
-                                    LatLng location = marker.getPosition();
-                                    String hil = marker.getSnippet();
-                                    Intent i = new Intent(getApplicationContext(),ShowRestaurant.class);
-                                    i.putExtra("id", String.valueOf(marker.getId()));
-                                    i.putExtra("id", String.valueOf(marker.getTitle()));
-                                    i.putExtra("id", String.valueOf(marker.getPosition()));
-                                    startActivity(i);
-                                    return false;
-                                }
-                            }
-                    );
-                }*/
                 // dump the JSONObject to logcat
                 String a = hmPlace.get("temp");
-                Log.d("the jsonObject!!!!!!",a);
+                Log.d("the jsonObject!!!!!!", a);
 
-                placeList.add(name);
+
             }
-
         }
-
     }
 
 
@@ -404,64 +407,5 @@ public class MainActivity extends FragmentActivity implements LocationListener{
     public void onStatusChanged(String provider, int status, Bundle extras) {
         // TODO Auto-generated method stub
 
-    }
-    public void saveData(Marker marker) throws IOException {
-        String flag = "false";
-        String data = "";
-        Context context = getBaseContext();
-        File mydir = context.getDir("Restaurants", Context.MODE_APPEND); //Creating an internal dir;
-        if(!mydir.isDirectory())
-        {
-            mydir.mkdirs();
-        }
-        if(marker != null) {
-
-            String id = marker.getId();
-            String info = marker.getTitle();
-            LatLng location = marker.getPosition();
-            data = "["+id+","+info+","+location+"]";
-            FileOutputStream out = null;
-
-            try {
-                File output = new File(mydir,id);
-                out =  openFileOutput(id,context.MODE_APPEND);
-                out.write(data.getBytes());
-                flag = "true";
-                path = id;
-                Log.d("path!!!!!!!!!", output.toString());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }finally {
-                if (out != null) {
-                    out.close();
-                }
-            }
-        }
-        Log.d("Data was saved:",flag);
-
-        readFile(path);
-        //   d(path);
-    }
-    public void d(String theFile){
-        File a = new File(theFile);
-        a.delete();
-    }
-    public void readFile(String theFile){
-        BufferedReader in = null;
-        try {
-            in = new BufferedReader(new InputStreamReader(openFileInput(theFile)));
-            String inputStr;
-            StringBuffer stringBuffer = new StringBuffer();
-            while ((inputStr = in.readLine()) != null) {
-
-                stringBuffer.append(inputStr);
-
-            }
-            in.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }

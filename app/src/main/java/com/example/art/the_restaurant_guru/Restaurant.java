@@ -16,15 +16,15 @@ public class Restaurant {
     private LatLng location;
 
 
-    public void RestaurantCreateNewRep(int id,String name,String address,String price,String foodType,String rating,String distance, LatLng location){
+    public void RestaurantCreateNewRep(int id){
         this._id = id;
-        this.name = name;
-        this.address = address;
-        this.price = price;
-        this.foodType = foodType;
-        this.rating = rating;
-        this.distance = distance;
-        this.location = location;
+        this.name = null;
+        this.address = null;
+        this.price = null;
+        this.foodType = null;
+        this.rating = null;
+        this.distance = null;
+        this.location = null;
     }
     public int get_id(){ return _id; }
     public void set_id(int id){ this._id = id; }
