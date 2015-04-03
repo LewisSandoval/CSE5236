@@ -25,6 +25,13 @@
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyC0KfSeO0yRPDRtFhPF6QfBSgDqcjHYwVU"  />
         <activity
+            android:name=".ShowRestaurant"
+            android:label="@string/title_activity_maps" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_maps" >
             <intent-filter>
@@ -48,7 +55,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity android:name=".HomeScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
