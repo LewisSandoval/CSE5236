@@ -204,7 +204,7 @@ public class MainActivity extends FragmentActivity implements LocationListener{
                     sb.append("&types=restaurant|food|bakery|cafe");
                     if(price >= 0){ sb.append("&minprice="+price); sb.append("&maxprice=" + price);}
                     sb.append("&sensor=true");
-                    if(category.compareTo("Any") != 0){ sb.append("&keyword=" + category);}
+                    if(category != null) if(category.compareTo("Any") != 0){ sb.append("&keyword=" + category);}
                     sb.append("&key="+key);
 
                     int index = sb.indexOf(" ");

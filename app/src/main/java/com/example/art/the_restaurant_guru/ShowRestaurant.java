@@ -150,7 +150,7 @@ public class ShowRestaurant extends Activity {
                 in.close();
                 favList = parseStr(stringBuffer);
                 for (int i = 0; i < favList.size(); i++) {
-                    names = names + "NAME: " + favList.get(i)[1] + "\nRATING: " + favList.get(i)[6] + "\nDATE: " + favList.get(i)[7] + "\n\n";
+                    names = names + "NAME: " + favList.get(i)[1] + "\nRATING: " + favList.get(i)[6] + "\n\n";
                 }
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
