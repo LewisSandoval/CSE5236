@@ -56,7 +56,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".HomeScreen"
-            android:screenOrientation="portrait">
+            android:configChanges="orientation">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>

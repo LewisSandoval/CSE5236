@@ -15,6 +15,8 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -22,12 +24,14 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -61,7 +65,8 @@ public class MainActivity extends FragmentActivity implements LocationListener{
     private List<LatLng> locationArray;
     private List<String> idArray;
     private int pointer;
-
+    private String theRandomPlace;
+    private boolean done_loading = false;
     /* Accelerometer stuff */
     private SensorManager mSensorManager;
     private float mAccel; // acceleration apart from gravity
@@ -86,36 +91,39 @@ public class MainActivity extends FragmentActivity implements LocationListener{
 
     public void back_to_home_btn(View view)
     {
-        Button button = (Button) view;
-        ((Button) view).setText("getting home screen....");
         Intent i = new Intent(getApplicationContext(),HomeScreen.class);
         startActivity(i);
     }
+
     public void randomPlace(View view)
     {
-
-        Random random = new Random();
-        pointer = (random.nextInt(placeArray.size()));
-        if(placeArray.size() > 0) {
-
-            ((Button) view).setText(placeArray.get(pointer));
-        } else {
-            ((Button) view).setText("No places found :(");
+        if(done_loading) {
+            Random random = new Random();
+            pointer = (random.nextInt(placeArray.size()));
+            if (placeArray.size() > 0) {
+                theRandomPlace = placeArray.get(pointer);
+                ((Button) view).setText(theRandomPlace);
+            } else {
+                ((Button) view).setText("No places found :(");
+            }
         }
     }
+
     public void moreInfo(View view){
-        Button button = (Button) view;
-        ((Button) view).setText("getting more info....");
-        String id = idArray.get(pointer);
-        String name = placeArray.get(pointer);
-        String address = addressArray.get(pointer);
-        LatLng location = locationArray.get(pointer);
-        Intent i = new Intent(getApplicationContext(),ShowRestaurant.class);
-        i.putExtra("id", String.valueOf(id));
-        i.putExtra("name", String.valueOf(name));
-        i.putExtra("address", String.valueOf(address));
-        i.putExtra("location", String.valueOf(location));
-        startActivity(i);
+        if(done_loading) {
+            Button button = (Button) view;
+            ((Button) view).setText("getting more info....");
+            String id = idArray.get(pointer);
+            String name = placeArray.get(pointer);
+            String address = addressArray.get(pointer);
+            LatLng location = locationArray.get(pointer);
+            Intent i = new Intent(getApplicationContext(), ShowRestaurant.class);
+            i.putExtra("id", String.valueOf(id));
+            i.putExtra("name", String.valueOf(name));
+            i.putExtra("address", String.valueOf(address));
+            i.putExtra("location", String.valueOf(location));
+            startActivity(i);
+        }
     }
     @Override
     protected void onResume() {
@@ -132,7 +140,6 @@ public class MainActivity extends FragmentActivity implements LocationListener{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mSensorManager.registerListener(mSensorListener, mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL);
         mAccel = 0.00f;
@@ -200,12 +207,26 @@ public class MainActivity extends FragmentActivity implements LocationListener{
                     if(category.compareTo("Any") != 0){ sb.append("&keyword=" + category);}
                     sb.append("&key="+key);
 
+                    int index = sb.indexOf(" ");
+                    if(index > 0)
+                    {
+                        sb.replace(index, index+1,"%20");
+                    }
 
                     // Creating a new non-ui thread task to download Google place json data
                     PlacesTask placesTask = new PlacesTask();
 
-                    // Invokes the "doInBackground()" method of the class PlaceTask
-                    placesTask.execute(sb.toString());
+                    if(hasNetworkConnection())
+                    {
+                        // Invokes the "doInBackground()" method of the class PlaceTask
+                        placesTask.execute(sb.toString());
+                    }
+                    else
+                    {
+                        Toast.makeText(MainActivity.this, "Sorry, you are not connected to the internet...\nPlease connect your device and try again.", Toast.LENGTH_LONG).show();
+                        Intent i = new Intent(getApplicationContext(),HomeScreen.class);
+                        startActivity(i);
+                    }
                 }
 
     }
@@ -322,9 +343,6 @@ public class MainActivity extends FragmentActivity implements LocationListener{
                 // Getting a place from the places list
                 HashMap<String, String> hmPlace = list.get(i);
 
-                // Getting id of the place
-               // String id = hmPlace.get("id");
-
                 // Getting latitude of the place
                 double lat = Double.parseDouble(hmPlace.get("lat"));
 
@@ -355,6 +373,10 @@ public class MainActivity extends FragmentActivity implements LocationListener{
 
                 if (price_level <= user_price) {
                     // Placing a marker on the touched position
+                   if(theRandomPlace != null && !theRandomPlace.equals(name))
+                    {
+                        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+                    }
                     Marker marker = mGoogleMap.addMarker(markerOptions);
                     String id = marker.getId();
                     placeArray.add(name);
@@ -362,13 +384,8 @@ public class MainActivity extends FragmentActivity implements LocationListener{
                     locationArray.add(latLng);
                     idArray.add(id);
                 }
-
-                // dump the JSONObject to logcat
-                String a = hmPlace.get("temp");
-                Log.d("the jsonObject!!!!!!", a);
-
-
             }
+            done_loading = true;
         }
     }
 
@@ -407,5 +424,18 @@ public class MainActivity extends FragmentActivity implements LocationListener{
     public void onStatusChanged(String provider, int status, Bundle extras) {
         // TODO Auto-generated method stub
 
+    }
+    private boolean hasNetworkConnection()
+    {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        boolean isConnected = true;
+        boolean isWifiAvailable = networkInfo.isAvailable();
+        boolean isWifiConnected = networkInfo.isConnected();
+        networkInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+        boolean isMobileAvailable = networkInfo.isAvailable();
+        boolean isMobileConnected = networkInfo.isConnected();
+        isConnected = (isMobileAvailable&&isMobileConnected) || (isWifiAvailable&&isWifiConnected);
+        return isConnected;
     }
 }

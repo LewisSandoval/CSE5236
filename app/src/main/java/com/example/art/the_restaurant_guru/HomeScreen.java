@@ -1,7 +1,10 @@
 package com.example.art.the_restaurant_guru;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -35,6 +38,7 @@ public class HomeScreen extends Activity {
         ArrayAdapter<CharSequence> rangeAdapter = ArrayAdapter.createFromResource(this, R.array.range_array, android.R.layout.simple_spinner_item);
         rangeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         third_spinner.setAdapter(rangeAdapter);
+
 
         // Button click Listener
         addListenerOnButton();
@@ -108,18 +112,46 @@ public class HomeScreen extends Activity {
                                 Toast.LENGTH_LONG).show();
                 }
                 intent.putExtra("range", range);
+                if(hasNetworkConnection())
+                {
+                    startActivity(intent);
+                }
+                else
+                {
+                    Toast.makeText(HomeScreen.this,"Sorry, you are not connected to the internet...\nPlease connect your device and try again.",Toast.LENGTH_LONG).show();
+                }
 
-                Toast.makeText(HomeScreen.this,
-                        "On Button Click : " +
-                                "\n" + String.valueOf(first_spinner.getSelectedItem()) + "\n" + price + "\n" + range,
-                        Toast.LENGTH_LONG).show();
-
-                startActivity(intent);
             }
 
         });
 
     }
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+    private boolean hasNetworkConnection()
+    {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        boolean isConnected = true;
+        boolean isWifiAvailable = networkInfo.isAvailable();
+        boolean isWifiConnected = networkInfo.isConnected();
+        networkInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+        boolean isMobileAvailable = networkInfo.isAvailable();
+        boolean isMobileConnected = networkInfo.isConnected();
+        isConnected = (isMobileAvailable&&isMobileConnected) || (isWifiAvailable&&isWifiConnected);
+        return isConnected;
+    }
 
 }
