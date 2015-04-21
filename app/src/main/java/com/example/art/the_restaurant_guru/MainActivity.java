@@ -1,7 +1,15 @@
 package com.example.art.the_restaurant_guru;
 
 /**
- * Created by art on 4/1/2015.
+ * MainActivity.java
+ *
+ * This class will show the map of the restaurants that fit the parameters given in
+ * HomeScreen.java. If there is a network outage the user will be sent back to
+ * HomeScreen.java and shown an error message.
+ *
+ * CSE 5236
+ * Group 6
+ * 4/20/2015
  */
 
 import android.app.Dialog;
@@ -98,31 +106,49 @@ public class MainActivity extends FragmentActivity implements LocationListener{
     public void randomPlace(View view)
     {
         if(done_loading) {
-            Random random = new Random();
-            pointer = (random.nextInt(placeArray.size()));
-            if (placeArray.size() > 0) {
-                theRandomPlace = placeArray.get(pointer);
-                ((Button) view).setText(theRandomPlace);
-            } else {
-                ((Button) view).setText("No places found :(");
+            if(placeArray != null && placeArray.size()== 0)
+            {
+
+                Toast.makeText(MainActivity.this, "Sorry, there are no restaurants that fix these parameters\n Please try again..", Toast.LENGTH_LONG).show();
+                Intent i = new Intent(getApplicationContext(),HomeScreen.class);
+                startActivity(i);
+
+            }
+            else {
+                Random random = new Random();
+                pointer = (random.nextInt(placeArray.size()));
+                if (placeArray.size() > 0) {
+                    theRandomPlace = placeArray.get(pointer);
+                    ((Button) view).setText(theRandomPlace);
+                } else {
+                    ((Button) view).setText("No places found :(");
+                }
             }
         }
     }
-
+    //  This is a button to ShowRestaurant.java
     public void moreInfo(View view){
         if(done_loading) {
-            Button button = (Button) view;
-            ((Button) view).setText("getting more info....");
-            String id = idArray.get(pointer);
-            String name = placeArray.get(pointer);
-            String address = addressArray.get(pointer);
-            LatLng location = locationArray.get(pointer);
-            Intent i = new Intent(getApplicationContext(), ShowRestaurant.class);
-            i.putExtra("id", String.valueOf(id));
-            i.putExtra("name", String.valueOf(name));
-            i.putExtra("address", String.valueOf(address));
-            i.putExtra("location", String.valueOf(location));
-            startActivity(i);
+            if(placeArray != null && placeArray.size()== 0)
+            {
+                Toast.makeText(MainActivity.this, "Sorry, there are no restaurants that fix these parameters\n Please try again..", Toast.LENGTH_LONG).show();
+                Intent i = new Intent(getApplicationContext(),HomeScreen.class);
+                startActivity(i);
+            }
+            else {
+                Button button = (Button) view;
+                ((Button) view).setText("getting more info....");
+                String id = idArray.get(pointer);
+                String name = placeArray.get(pointer);
+                String address = addressArray.get(pointer);
+                LatLng location = locationArray.get(pointer);
+                Intent i = new Intent(getApplicationContext(), ShowRestaurant.class);
+                i.putExtra("id", String.valueOf(id));
+                i.putExtra("name", String.valueOf(name));
+                i.putExtra("address", String.valueOf(address));
+                i.putExtra("location", String.valueOf(location));
+                startActivity(i);
+            }
         }
     }
     @Override
